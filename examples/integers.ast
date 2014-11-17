@@ -1,0 +1,6 @@
+[
+ClassDecl {className = "Integers", classConstructor = Just (MethodDecl {methodParameters = [
+], methodBody = [
+IntConst 23212,IntConst 0,IntConst 999]}
+), classMethods = [
+], classReceive = Nothing}]

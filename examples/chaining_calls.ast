@@ -1,0 +1,15 @@
+[ClassDecl {className = "ChainingCalls",
+ classConstructor = Just (
+MethodDecl {methodParameters = [],
+ methodBody = [CallMethod (
+CallMethod (
+CallMethod (
+CallMethod (
+ReadVar "man"
+) "wife" [ReadVar "nice"]
+) "son" [IntConst 3]
+) "friend" [IntConst 2]
+) "cat" [IntConst 7]]}
+),
+ classMethods = [],
+ classReceive = Nothing}]

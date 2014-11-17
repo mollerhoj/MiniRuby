@@ -1,0 +1,24 @@
+[ClassDecl {
+    className = "Main",
+    classConstructor =
+      Just (MethodDecl {
+               methodParameters = [],
+               methodBody = [
+                 CallMethod (CallMethod Self "fact" [IntConst 0])
+                   "puts" [],
+                 CallMethod (CallMethod Self "fact" [IntConst 10])
+                   "puts" []]}),
+    classMethods = [
+      NamedMethodDecl "fact"
+      (MethodDecl {
+          methodParameters = ["n"],
+          methodBody = [
+            Match (ReadVar "n") [(ConstInt 0,[Return (IntConst 1)])],
+            StringConst
+            "This line should...",
+            Times (ReadVar "n")
+            (CallMethod Self "fact"
+             [Minus (ReadVar "n") (IntConst 1)])
+            ]})
+      ],
+    classReceive = Nothing}]

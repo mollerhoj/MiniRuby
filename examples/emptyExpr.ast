@@ -1,0 +1,1 @@
+Right [ClassDecl {className = "EmptyExpr", classConstructor = Just (MethodDecl {methodParameters = [], methodBody = []}), classMethods = [], classReceive = Nothing}]

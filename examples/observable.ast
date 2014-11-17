@@ -1,0 +1,85 @@
+[ClassDecl {
+    className = "Observable",
+    classConstructor = Just (
+      MethodDecl {
+         methodParameters = ["value"],
+         methodBody = [
+           SetField "value" (ReadVar "value"),
+           SetField "observers" (TermLiteral "nil" [])]}),
+    classMethods = [
+      NamedMethodDecl "addObserver"
+      (MethodDecl {
+          methodParameters = ["obj","cookie"],
+          methodBody = [
+            SetField "observers"
+            (TermLiteral "cons"
+             [TermLiteral "observer"
+              [ReadVar "obj",
+               ReadVar "cookie"],
+              ReadField "observers"])]}),
+      NamedMethodDecl "setValue"
+      (MethodDecl {
+          methodParameters = ["value"],
+          methodBody = [
+            SetField "value" (ReadVar "value"),
+            CallMethod Self "notifyObservers" [ReadField "observers"]]}),
+      NamedMethodDecl "notifyObservers"
+      (MethodDecl {
+          methodParameters = ["xs"],
+          methodBody = [
+            Match (ReadVar "xs")
+            [(TermPattern "cons" ["x","xs"],
+              [StringConst "Note - new xs shadows the old one",
+               Match (ReadVar "x")
+               [(TermPattern "observer" ["obj","cookie"],
+                 [CallMethod (ReadVar "obj") "notify"
+                    [ReadVar "cookie",
+                     ReadField "value"]])],
+               CallMethod Self "notifyObservers" [ReadVar "xs"]])]]})],
+    classReceive = Nothing},
+ ClassDecl {
+   className = "Observer",
+   classConstructor = Nothing,
+   classMethods = [
+     NamedMethodDecl "notify"
+     (MethodDecl {
+         methodParameters = ["cookie","initializeval"],
+         methodBody = [
+           CallMethod (StringConst "Changed:")
+             "puts" [],
+           CallMethod (ReadVar "cookie")
+             "puts" [],
+           CallMethod (StringConst "New value")
+             "puts" [],
+           CallMethod (ReadVar "initializeval")
+             "puts" []]})],
+   classReceive = Nothing
+   },
+ ClassDecl {
+   className = "Main",
+   classConstructor = Just (
+     MethodDecl {
+        methodParameters = [],
+        methodBody = [
+          SetVar "box" (New "Observable" [IntConst 0]),
+          SetVar "obs1" (New "Observer" []),
+          SetVar "obs2" (New "Observer" []),
+          CallMethod (ReadVar "box")
+            "setValue" [IntConst 1],
+          CallMethod (ReadVar "box")
+            "addObserver" [
+              ReadVar "obs1",
+              TermLiteral "obs1" []],
+          CallMethod (ReadVar "box")
+            "setValue" [IntConst 2],
+          CallMethod (StringConst "")
+            "puts" [],
+          CallMethod (ReadVar "box")
+            "addObserver" [
+              ReadVar "obs2",
+             TermLiteral "obs2" []],
+          CallMethod (ReadVar "box")
+            "setValue" [IntConst 3]]}),
+   classMethods = [],
+   classReceive = Nothing
+           }]

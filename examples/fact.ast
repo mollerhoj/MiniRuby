@@ -1,0 +1,30 @@
+[ClassDecl {
+    className = "Fact",
+    classConstructor = Nothing,
+    classMethods = [
+      NamedMethodDecl "fact"
+      (MethodDecl {
+          methodParameters = ["n"],
+          methodBody = [Match (ReadVar "n")
+                        [(ConstInt 0,
+                          [IntConst 1]),
+                         (AnyValue "x",
+                          [Times (ReadVar "n")
+                           (CallMethod Self "fact"
+                            [Minus (ReadVar "n") (IntConst 1)])])]]
+          })],
+    classReceive = Nothing},
+ ClassDecl {
+   className = "Main",
+   classConstructor =
+     Just (MethodDecl {
+              methodParameters = [],
+              methodBody = [
+                SetVar "f" (New "Fact" []),
+                CallMethod
+                  (CallMethod (ReadVar "f") "fact" [IntConst 0])
+                  "puts" [],
+                CallMethod
+                  (CallMethod (ReadVar "f") "fact" [IntConst 10])
+                  "puts" []]}),
+   classMethods = [], classReceive = Nothing}]

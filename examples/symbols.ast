@@ -1,0 +1,1 @@
+[ClassDecl {className = "Symbols", classConstructor = Just (MethodDecl {methodParameters = [], methodBody = [SymbolConst "Hello_dude",SymbolConst "a",SymbolConst "_b"]}), classMethods = [], classReceive = Nothing}]

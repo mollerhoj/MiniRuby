@@ -1,0 +1,12 @@
+[ClassDecl {
+className = "Names",
+ classConstructor = Just (MethodDecl {
+methodParameters = [],
+ methodBody = [ReadVar "_b",
+ReadVar "X",
+ReadVar "ap2e",
+ReadVar "a_e2",
+ReadVar "X_7_as_df"]}
+),
+ classMethods = [],
+ classReceive = Nothing}]

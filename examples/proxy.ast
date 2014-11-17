@@ -1,0 +1,65 @@
+[ClassDecl {
+    className = "Fact",
+    classConstructor = Nothing,
+    classMethods = [
+      NamedMethodDecl "fact"
+      (MethodDecl {
+          methodParameters = ["n"],
+          methodBody = [
+            Match (ReadVar "n")
+            [(ConstInt 0,[IntConst 1]),
+             (AnyValue "x",
+              [Times (ReadVar "n")
+               (CallMethod Self "fact" [
+                   Minus (ReadVar "n")
+                   (IntConst 1)])])]]})
+      ],
+    classReceive = Nothing
+    },
+ ClassDecl {
+   className = "Proxy",
+   classConstructor = Just (
+     MethodDecl {
+        methodParameters = ["c","log"],
+        methodBody =
+          [SetField "receiver" (ReadVar "c"),
+           SetField "log" (ReadVar "log")]}),
+   classMethods = [],
+   classReceive = Just (
+     ReceiveDecl {
+        receiveParam = "msg",
+        receiveBody = [
+          Match (ReadField "log")
+          [(TermPattern "true" [],
+            [CallMethod
+               (StringConst "Method call:")
+               "puts" [],
+             CallMethod (ReadVar "msg") "puts" []])],
+          SendMessage (ReadField "receiver") (ReadVar "msg")
+          ]
+        })
+   },
+ ClassDecl {className = "Main",
+            classConstructor =
+              Just (MethodDecl {
+                       methodParameters = [],
+                       methodBody = [
+                         SetVar "f" (New "Fact" []),
+                         CallMethod (CallMethod (ReadVar "f") "fact" [IntConst 10])
+                           "puts" [],
+                         SetVar "p1"
+                           (New "Proxy" [
+                               ReadVar "f",
+                               TermLiteral "false" []]),
+                         CallMethod
+                           (CallMethod (ReadVar "p1") "fact" [IntConst 10])
+                           "puts" [],
+                         SetVar "p2"
+                           (New "Proxy" [
+                               ReadVar "f",
+                               TermLiteral "true" []]),
+                         CallMethod
+                           (CallMethod (ReadVar "p2") "fact" [IntConst 10])
+                             "puts" []]}),
+            classMethods = [],
+            classReceive = Nothing}]

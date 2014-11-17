@@ -1,0 +1,9 @@
+[ClassDecl {
+className = "WhiteSpace",
+ classConstructor = Just (MethodDecl {
+methodParameters = [],
+ methodBody = [Plus (IntConst 2) (CallMethod (CallMethod (ReadVar "man")
+ "wife" [ReadVar "nice"]) "cat" [IntConst 7,
+IntConst 10])]}),
+ classMethods = [],
+ classReceive = Nothing}]

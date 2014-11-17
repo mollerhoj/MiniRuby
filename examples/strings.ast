@@ -1,0 +1,11 @@
+[
+ClassDecl {className = "Strings",
+ classConstructor = Just (MethodDecl {methodParameters = [
+],
+ methodBody = [
+StringConst "\"\"",
+StringConst "\"Whatup?\"",
+StringConst "\"2323!~%#*&$^*&\""]}),
+ classMethods = [
+],
+ classReceive = Nothing}]

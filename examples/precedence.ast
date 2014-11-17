@@ -1,0 +1,14 @@
+[ClassDecl {className = "Precedence",
+ classConstructor = Just (
+MethodDecl {methodParameters = [],
+ methodBody = [Plus (
+IntConst 7) (
+Return (
+Plus (
+IntConst 2) (
+Times (
+IntConst 5) (
+CallMethod (
+ReadVar "x") "height" [ReadVar "vertical"]))))]}),
+ classMethods = [],
+ classReceive = Nothing}]
