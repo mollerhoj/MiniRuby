@@ -1,5 +1,3 @@
--- | This module defines a simple command line interface for the MiniRuby
--- interpreter.
 module Main
        (main)
 where

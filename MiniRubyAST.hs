@@ -1,7 +1,5 @@
--- | An abstract syntax tree definition for the MiniRuby language.
 module MiniRubyAST
-       ( Term (..)
-       , ObjectReference
+       ( ObjectReference
        , Value (..)
        , Name
        , Expr (..)
@@ -18,13 +16,7 @@ module MiniRubyAST
        )
        where
 
--- | A name is a string.
 type Name = String
-
--- | A term is an identifying symbol (the "tag") followed by a
--- possibly non-empty sequence of values.
-data Term = Term Name [Value]
-            deriving (Eq, Show)
 
 -- | An object reference is an integer uniquely identifying an object.
 -- This does not appear in the grammar, but is used in the runtime
@@ -33,8 +25,7 @@ type ObjectReference = Int
 
 -- | A value is either a term, an integer, or a string.  Expressions
 -- are evaluated to values and methods return values.
-data Value = TermValue Term
-           | IntValue Integer
+data Value = IntValue Integer
            | StringValue String
            | SymbolValue String
            | ReferenceValue ObjectReference
@@ -70,7 +61,6 @@ type Case = (Pattern,Exprs)
 
 data Pattern = ConstInt Integer
              | ConstString String
-             | TermPattern Name [Name]
              | AnyValue Name
              deriving (Eq, Show)
 

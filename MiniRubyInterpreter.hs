@@ -21,8 +21,6 @@ printed :: Value -> String
 printed (IntValue x) = show x
 printed (StringValue s) = s
 printed (ReferenceValue ref) = "#<object " ++ show ref ++ ">"
-printed (TermValue (Term sym vs)) =
-  sym ++ "(" ++ intercalate ", " (map printed vs) ++ ")"
 
 type Store = Map.Map
 type ObjectFields = Store Name Value
@@ -229,7 +227,7 @@ getMethodHelper name ((NamedMethodDecl name2 methodDecl):es) = if name == name2
 ----------------- Evaluate expressions ------------------
 
 evalExprs :: [Expr] -> MiniRubyMethodM Value
-evalExprs [] = return $ TermValue $ Term "nil" []
+evalExprs [] = return $ IntValue 0
 evalExprs [e] = evalExpr e
 evalExprs ((Return e):_) = evalExpr e 
 evalExprs (e:es) = evalExpr e >> evalExprs es
@@ -302,7 +300,6 @@ evalExpr (Return expr ) = evalExpr expr
 evalExpr x = fail $ "Using unpermitted expression: " ++ show x
 
 patternMatch :: Value -> Cases -> MiniRubyMethodM Value
-patternMatch _ [] = return $ TermValue $ Term "nil" []
 patternMatch v ((p,exprs):cs) = case (v,p) of
                                   (IntValue i,ConstInt j) -> if i == j
                                                              then evalExprs exprs
@@ -310,10 +307,6 @@ patternMatch v ((p,exprs):cs) = case (v,p) of
                                   (StringValue i,ConstString j) -> if i == j
                                                                    then evalExprs exprs
                                                                    else patternMatch v cs
-                                  (TermValue (Term i vs),TermPattern j ns) -> if i == j
-                                                                              then do bindVars ns vs
-                                                                                      evalExprs exprs
-                                                                              else patternMatch v cs
                                   (v',AnyValue k) -> do bindVar (k,v')
                                                         evalExprs exprs
                                   (_,_)          -> patternMatch v cs

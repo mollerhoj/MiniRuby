@@ -296,14 +296,7 @@ when' = do symbol "when"
            return (p,es)
 
 pattern :: Parser Pattern
-pattern = constInt <|> constString <|> termPattern <|> anyValue
-
-termPattern :: Parser Pattern
-termPattern = do n <- name
-                 schar '('
-                 ps <- params
-                 schar ')'
-                 return $ TermPattern n ps
+pattern = constInt <|> constString <|> anyValue
 
 anyValue :: Parser Pattern
 anyValue = do n <- name
