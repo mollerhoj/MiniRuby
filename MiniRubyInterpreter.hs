@@ -24,14 +24,16 @@ printed (ReferenceValue ref) = "#<object " ++ show ref ++ ">"
 
 type Store = Map.Map
 type ObjectFields = Store Name Value
-type GlobalStore = Store ObjectReference ObjectState
+
+type ObjectStore = Store ObjectReference ObjectState
+
 type MethodVariables = Store Name Value
 
 -- | The global state of the program execution.
 data GlobalState = GlobalState {
                      prog :: Prog,
                      output :: String,
-                     store :: GlobalStore,
+                     store :: ObjectStore,
                      storeIndex :: Int
                    } deriving (Show)
 
@@ -75,25 +77,25 @@ getGlobalState = MiniRubyM (\s -> Right (s,s))
 putGlobalState :: GlobalState -> MiniRubyM ()
 putGlobalState s = MiniRubyM (\_ -> Right ((),s))
 
-getGlobalStore :: MiniRubyM GlobalStore
-getGlobalStore = do s <- getGlobalState
+getObjectStore :: MiniRubyM ObjectStore
+getObjectStore = do s <- getGlobalState
                     return $ store s
 
-putGlobalStore :: GlobalStore -> MiniRubyM ()
-putGlobalStore gs = do s <- getGlobalState
+putObjectStore :: ObjectStore -> MiniRubyM ()
+putObjectStore gs = do s <- getGlobalState
                        putGlobalState (s {store = gs})
                     
 -- Cannot get objects we have not created. (Not really an issus for the end users, since we cannot
 -- remove objects either..)
 lookupObject :: ObjectReference -> MiniRubyM ObjectState
-lookupObject objRef = do st <- getGlobalStore
+lookupObject objRef = do st <- getObjectStore
                          case Map.lookup objRef st of
                            Nothing -> fail "Object not found."
                            Just x -> return x
 
 setObject :: ObjectReference -> ObjectState -> MiniRubyM ()
-setObject objRef os = do oldStore <- getGlobalStore
-                         putGlobalStore $ Map.insert objRef os oldStore
+setObject objRef os = do oldStore <- getObjectStore
+                         putObjectStore $ Map.insert objRef os oldStore
 
 getObjectState :: MiniRubyMethodM ObjectState
 getObjectState = MiniRubyMethodM $ \s -> do os <- lookupObject (current s)
