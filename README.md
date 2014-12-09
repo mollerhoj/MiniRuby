@@ -7,8 +7,8 @@ MiniRuby is a homemade language that kinda feels like ruby.
 
 Motivation
 ----
-You learn a lot about your language of choice when you try to build it from scratsh.
-I find that haskell is the best tool for the job when implementing programming languages from scratsh.
+You learn a lot about your language of choice when you try to build it from scratch.
+I find that haskell is the best tool for the job when implementing programming languages from scratch.
 
 Example
 -----
