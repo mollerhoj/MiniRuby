@@ -21,7 +21,7 @@ printed :: Value -> String
 printed (IntValue x) = show x
 printed (StringValue s) = s
 printed (SymbolValue s) = s
-printed (BooleanValue b) = show b
+printed (BooleanValue b) = show b ++ "!"
 printed (ReferenceValue ref) = "#<object " ++ show ref ++ ">"
 
 type Store = Map.Map
@@ -251,11 +251,20 @@ evalArit f e1 e2 = do v1 <- evalExpr e1
                         (IntValue v1',IntValue v2') -> return $ IntValue $ f v1' v2' 
                         _ -> fail "Cannot do arithmetic with non-integers"
 
+evalBool :: (Integer -> Integer -> Bool) -> Expr -> Expr -> MiniRubyMethodM Value
+evalBool f e1 e2 = do v1 <- evalExpr e1
+                      v2 <- evalExpr e2
+                      case (v1,v2) of
+                        (IntValue v1',IntValue v2') -> return $ BooleanValue $ f v1' v2' 
+                        _ -> fail "Cannot do comparison with non-integers"
+
 evalExpr :: Expr -> MiniRubyMethodM Value
 evalExpr (Minus e1 e2) = evalArit (-) e1 e2
 evalExpr (Plus e1 e2) = evalArit (+) e1 e2
 evalExpr (Times e1 e2) = evalArit (*) e1 e2
 evalExpr (DividedBy e1 e2) = evalArit div e1 e2
+evalExpr (LessThan e1 e2) = evalBool (<) e1 e2
+evalExpr (GreaterThan e1 e2) = evalBool (>) e1 e2
 evalExpr (IntConst i) = return $ IntValue i
 evalExpr (StringConst str) = return $ StringValue str
 evalExpr (BooleanConst b) = return $ BooleanValue b

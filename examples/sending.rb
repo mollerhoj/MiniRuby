@@ -23,10 +23,8 @@ class Main
     list.put(3,8)
     puts(list.get(3))
 
-    t = True
-    puts(t)
-    f = False
-    puts(f)
+    puts(2 < 1 + 1 + 1);
+    puts(2 > 3);
   end
 
   def switch(x)

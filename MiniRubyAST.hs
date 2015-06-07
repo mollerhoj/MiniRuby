@@ -41,6 +41,9 @@ data Expr = IntConst Integer
           | Plus Expr Expr     
           | Minus Expr Expr    
           | Times Expr Expr     
+          | LessThan Expr Expr
+          | EqualTo Expr Expr
+          | GreaterThan Expr Expr
           | DividedBy Expr Expr
           | Return Expr        
           | SetField Name Expr 

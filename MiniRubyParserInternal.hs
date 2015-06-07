@@ -164,8 +164,32 @@ exprEnd = do e <- expr
              return e
           <|> expr
 
+subExpr :: Parser Expr
+subExpr = term `chainl1` addOp
+
 expr :: Parser Expr
-expr = term `chainl1` addOp
+expr = do s1 <- subExpr 
+          compareExpr s1
+       
+compareExpr :: Expr -> Parser Expr
+compareExpr e = do lessThanExpr e <|> greaterThanExpr e <|> return e
+
+lessThanExpr :: Expr -> Parser Expr
+lessThanExpr e1 = do schar '<'
+                     e2 <- subExpr
+                     return $ LessThan e1 e2
+
+greaterThanExpr :: Expr -> Parser Expr
+greaterThanExpr e1 = do schar '>'
+                        e2 <- subExpr
+                        return $ GreaterThan e1 e2
+
+-- Booleans
+lessThan :: Parser Expr
+lessThan = do schar '<'
+              e1 <- expr
+              e2 <- expr
+              return $ BooleanConst False
 
 -- Ariteritmics
 term :: Parser Expr
