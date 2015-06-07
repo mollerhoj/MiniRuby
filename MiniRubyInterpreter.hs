@@ -1,6 +1,6 @@
 module MiniRubyInterpreter
        ( runProg
-       , Error (..)
+       , RuntimeError (..)
        )
        where
 
@@ -12,8 +12,8 @@ import Data.List
 
 import qualified Data.Map as Map
 
-data Error = Error {
-  unError :: String 
+data RuntimeError = RuntimeError {
+  unRuntimeError :: String 
 } deriving (Show, Eq)
 
 -- | Give the printed representation of a value.
@@ -56,7 +56,7 @@ data MethodState = MethodState {
 -- Maintains the global state, the running output, and whether or not
 -- an error has occurred.
 data MiniRubyM a = MiniRubyM {
-  runMiniRubyM :: GlobalState -> Either Error (a,GlobalState)
+  runMiniRubyM :: GlobalState -> Either RuntimeError (a,GlobalState)
 }
 
 instance Functor MiniRubyM where
@@ -71,7 +71,7 @@ instance Monad MiniRubyM where
   (MiniRubyM h) >>= f = MiniRubyM $ \s -> case h s of 
                                           Left x -> Left x
                                           Right (a,s') -> runMiniRubyM (f a) s'
-  fail str = MiniRubyM (\_ -> Left $ Error str)
+  fail str = MiniRubyM (\_ -> Left $ RuntimeError str)
 
 getGlobalState :: MiniRubyM GlobalState
 getGlobalState = MiniRubyM (\s -> Right (s,s))
@@ -142,16 +142,16 @@ instance Applicative MiniRubyMethodM where
 -- action has access to the global state (through liftMiniRubyM).
 instance Monad MiniRubyMethodM where
   return x = (liftMiniRubyM . return) x --MiniRubyMethodM (\s -> MiniRubyM (\z -> Right ((x,s),z)))
-  fail x = (liftMiniRubyM . fail) x -- MiniRubyMethodM (\_ -> MiniRubyM (\_ -> Left $ Error x))
+  fail x = (liftMiniRubyM . fail) x -- MiniRubyMethodM (\_ -> MiniRubyM (\_ -> Left $ RuntimeError x))
 
   (MiniRubyMethodM h) >>= f = MiniRubyMethodM $ \ms -> case runMiniRubyM (h ms) (globalState ms) of
-                                                   Left str -> fail (unError str)
+                                                   Left str -> fail (unRuntimeError str)
                                                    Right ((x,s'),_) -> runMiniRubyMethodM (f x) s'
 
 -- | Perform a 'MiniRubyM' operation inside a 'MiniRubyMethodM'.
 liftMiniRubyM :: MiniRubyM a -> MiniRubyMethodM a
 liftMiniRubyM monad = MiniRubyMethodM (\ms -> case (runMiniRubyM monad) (globalState ms) of
-                                         Left x -> fail (unError x)
+                                         Left x -> fail (unRuntimeError x)
                                          Right (v,gs) -> MiniRubyM (\gs' -> Right ((v,ms {globalState = gs} ),gs')))
   
 
@@ -381,8 +381,8 @@ puts v = do s <- liftMiniRubyM getGlobalState
             liftMiniRubyM $ putGlobalState (s {output = (output s) ++ printed v ++ "\n"})
             return v
 
--- runProg :: Prog -> Either Error String
-runProg :: Prog -> Either Error String
+-- runProg :: Prog -> Either RuntimeError String
+runProg :: Prog -> Either RuntimeError String
 runProg p = case starter p of
               Right ((_,_), gs) -> Right (output gs)
               Left x -> Left x
@@ -395,7 +395,7 @@ scanForDoubleClassNames p = if allClassNames p /= (nub (allClassNames p))
 allClassNames :: Prog -> [Name]
 allClassNames p = fmap className p
 
-starter :: Prog -> Either Error ((Value, MethodState), GlobalState)
+starter :: Prog -> Either RuntimeError ((Value, MethodState), GlobalState)
 starter p = let monad = do 
                  scanForDoubleClassNames p  
                  cd <- findClassDecl "Main" 
