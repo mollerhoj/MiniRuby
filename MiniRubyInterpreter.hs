@@ -20,6 +20,7 @@ data Error = Error {
 printed :: Value -> String
 printed (IntValue x) = show x
 printed (StringValue s) = s
+printed (SymbolValue s) = s
 printed (ReferenceValue ref) = "#<object " ++ show ref ++ ">"
 
 type Store = Map.Map

@@ -51,10 +51,10 @@ symbolConst = do schar ':'
                  return $ SymbolConst $ n
 
 constString :: Parser Pattern
-constString = do x <- schar '"'
-                 y <- munch isLetter
-                 z <- schar '"'
-                 return $ ConstString $ x:y ++ [z]
+constString = do schar '"'
+                 x <- munch isNotQuote
+                 schar '"'
+                 return $ ConstString $ x
 
 -- Classes
 classDecls :: Parser [ClassDecl]
@@ -133,7 +133,6 @@ params = sepBy param $ schar ','
 param :: Parser Param
 param = name
 
-
 -- Exprs
 exprs :: Parser Exprs
 exprs = do return []
@@ -207,8 +206,7 @@ keywords :: [String]
 keywords = ["end", "self", "class", "new", "method_missing", "initialize", "case", "return", "when", "else"]
 
 factor :: Parser Expr
-factor =     intConst
-         <|> self
+factor =     self
          <|> return'
          <|> new
          <|> parenExpr
