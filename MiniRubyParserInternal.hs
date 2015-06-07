@@ -45,6 +45,14 @@ stringConst = do schar '"'
                  schar '"'
                  return $ StringConst $ x
 
+trueConst :: Parser Expr
+trueConst = do symbol "True"
+               return $ BooleanConst True
+
+falseConst :: Parser Expr
+falseConst = do symbol "False"
+                return $ BooleanConst False
+
 symbolConst :: Parser Expr
 symbolConst = do schar ':'
                  n <- anyName
@@ -203,7 +211,7 @@ fieldName = do schar '@'
                anyName
 
 keywords :: [String]
-keywords = ["end", "self", "class", "new", "method_missing", "initialize", "case", "return", "when", "else"]
+keywords = ["end", "self", "class", "new", "method_missing", "initialize", "case", "return", "when", "else", "True", "False"]
 
 factor :: Parser Expr
 factor =     self
@@ -217,6 +225,8 @@ factor =     self
          <|> case'
          <|> stringConst
          <|> symbolConst
+         <|> trueConst
+         <|> falseConst
          <|> intConst
          <|> selfCall
 

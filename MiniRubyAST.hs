@@ -28,6 +28,7 @@ type ObjectReference = Int
 data Value = IntValue Integer
            | StringValue String
            | SymbolValue String
+           | BooleanValue Bool
            | ReferenceValue ObjectReference
            deriving (Eq, Show)
 
@@ -35,6 +36,7 @@ data Value = IntValue Integer
 data Expr = IntConst Integer    
           | StringConst String  
           | SymbolConst String  
+          | BooleanConst Bool
           | Self                
           | Plus Expr Expr     
           | Minus Expr Expr    

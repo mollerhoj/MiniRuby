@@ -21,6 +21,7 @@ printed :: Value -> String
 printed (IntValue x) = show x
 printed (StringValue s) = s
 printed (SymbolValue s) = s
+printed (BooleanValue b) = show b
 printed (ReferenceValue ref) = "#<object " ++ show ref ++ ">"
 
 type Store = Map.Map
@@ -257,6 +258,7 @@ evalExpr (Times e1 e2) = evalArit (*) e1 e2
 evalExpr (DividedBy e1 e2) = evalArit div e1 e2
 evalExpr (IntConst i) = return $ IntValue i
 evalExpr (StringConst str) = return $ StringValue str
+evalExpr (BooleanConst b) = return $ BooleanValue b
 
 evalExpr (SetVar varName e1) = do varValue <- evalExpr e1
                                   bindVar (varName,varValue)
